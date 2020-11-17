@@ -1,10 +1,61 @@
 package it.unibo.oop.lab.mvcio2;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+import javax.swing.*;
+
+import it.unibo.oop.lab.mvcio.Controller;
 /**
  * A very simple program using a graphical interface.
  * 
  */
 public final class SimpleGUIWithFileChooser {
+    private JFrame frame;
+    
+    public SimpleGUIWithFileChooser(final Controller control) {
+        this.frame = new JFrame("The graphical interface");
+        
+        final JPanel panel = new JPanel();
+        final JTextArea textArea = new JTextArea();
+        final JButton button = new JButton("SAVE");
+        
+        panel.setLayout(new BorderLayout());
+        this.frame.getContentPane().add(panel);
+
+        panel.add(textArea, BorderLayout.NORTH);
+        panel.add(button, BorderLayout.NORTH);
+        
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent event) {
+                try {
+                    control.printStringInCurrentFile(textArea.getText());
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "An error occurred", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        
+    }
+    
+   private void display() {
+       final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+       final int sw = (int) screen.getWidth();
+       final int sh = (int) screen.getHeight();
+       
+       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       frame.setSize(sw / 2, sh / 2);
+       frame.setLocationByPlatform(true);
+       frame.setVisible(true);
+    }
+    
+    public static void main(final String... args) {
+        new SimpleGUIWithFileChooser(new Controller()).display();;
+     }
 
     /*
      * TODO: Starting from the application in mvcio:

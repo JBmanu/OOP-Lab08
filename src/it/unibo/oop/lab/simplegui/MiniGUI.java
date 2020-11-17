@@ -10,9 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * This class is a simple application that writes a random number on a file.
@@ -24,29 +26,37 @@ import javax.swing.JPanel;
 public class MiniGUI {
 
     private static final String TITLE = "A very simple GUI application";
-    private static final int PROPORTION = 5;
+    private static final int PROPORTION = 4;
     private final Random rng = new Random();
     private final JFrame frame = new JFrame(TITLE);
-
     /**
      * 
      */
     public MiniGUI() {
         final JPanel canvas = new JPanel();
         canvas.setLayout(new BorderLayout());
-        final JButton write = new JButton("Print a random number on standard output");
-        canvas.add(write, BorderLayout.CENTER);
         frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        /*
-         * Handlers
-         */
+        
+        // Ex 01.01 //
+        final JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        canvas.add(panel, BorderLayout.CENTER);
+        final JButton write = new JButton("Print a random number on standard output");
+        panel.add(write);
+        
+        // Ex 01.02 //
+        final JTextField result = new JTextField("Number Random");
+        canvas.add(result, BorderLayout.NORTH);
+
+        // Ex 01.03 // 
         write.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                System.out.println(rng.nextInt());
-            }
+                result.setText(Integer.toString(rng.nextInt()));            }
         });
+        
+//        this.display();
     }
 
     private void display() {
@@ -71,14 +81,16 @@ public class MiniGUI {
         /*
          * OK, ready to pull the frame onscreen
          */
+        frame.pack();
         frame.setVisible(true);
     }
-
+    
     /**
      * @param args ignored
      */
     public static void main(final String... args) {
-       new MiniGUI().display();
+        //MiniGUI myGui = new MiniGUI();
+        new MiniGUI().display();
     }
 
 }
