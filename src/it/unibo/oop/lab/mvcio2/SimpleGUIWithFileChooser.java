@@ -1,10 +1,12 @@
 package it.unibo.oop.lab.mvcio2;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.*;
@@ -19,18 +21,30 @@ public final class SimpleGUIWithFileChooser {
     
     public SimpleGUIWithFileChooser(final Controller control) {
         this.frame = new JFrame("The graphical interface");
+        final JPanel canvasAll = new JPanel();
+        canvasAll.setLayout(new BorderLayout());
+        this.frame.getContentPane().add(canvasAll);
         
         final JPanel panel = new JPanel();
-        final JTextArea textArea = new JTextArea();
-        final JButton button = new JButton("SAVE");
-        
         panel.setLayout(new BorderLayout());
-        this.frame.getContentPane().add(panel);
-
-        panel.add(textArea, BorderLayout.NORTH);
-        panel.add(button, BorderLayout.NORTH);
         
-        button.addActionListener(new ActionListener() {
+        final JTextArea filePath = new JTextArea(control.getCurrentFilePath());
+        panel.add(filePath, BorderLayout.CENTER);
+        filePath.setBackground(Color.LIGHT_GRAY); 
+        filePath.setEditable(false);
+        
+        final JButton buttonBrowse = new JButton("Browse");
+        panel.add(buttonBrowse, BorderLayout.EAST);
+        
+        final JButton buttonSave = new JButton("SAVE");
+        canvasAll.add(buttonSave, BorderLayout.SOUTH);
+        
+        final JTextArea textArea = new JTextArea();
+        canvasAll.add(textArea, BorderLayout.CENTER);
+
+        canvasAll.add(panel, BorderLayout.NORTH);
+                
+        buttonSave.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent event) {
                 try {
                     control.printStringInCurrentFile(textArea.getText());
@@ -38,6 +52,25 @@ public final class SimpleGUIWithFileChooser {
                     JOptionPane.showMessageDialog(null, e.getMessage(), "An error occurred", JOptionPane.ERROR_MESSAGE);
                 }
             }
+        });
+        
+        buttonBrowse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                final JFileChooser browserFile = new JFileChooser();
+                browserFile.setSelectedFile(control.getCurrentFile());
+                final int result = browserFile.showSaveDialog(frame);
+                switch(result) {
+                    case JFileChooser.APPROVE_OPTION:
+                        final File newFile = browserFile.getSelectedFile();
+                        control.setCurrentFile(newFile);
+                        filePath.setText(newFile.getPath()); break;
+                    case JFileChooser.CANCEL_OPTION: break;
+                    default:
+                        JOptionPane.showMessageDialog(frame, result, "Meh!", JOptionPane.ERROR_MESSAGE);         
+                }
+                
+            }
+            
         });
         
     }
